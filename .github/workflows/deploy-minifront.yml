@@ -1,0 +1,86 @@
+name: Deploy Minifront
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Runs at every 6th hour (4x a day)
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # ========== Needed to build minifront ==========
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Setup wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: 'latest'
+
+      - name: Clone Penumbra Web repo
+        run: git clone https://github.com/penumbra-zone/web
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ./web
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096 # Increase Node.js heap size given memory-intensive steps
+
+      - name: Disable Turbo Telemetry
+        run: pnpm turbo telemetry disable
+        working-directory: ./web
+
+      - name: Build Minifront
+        run: pnpm turbo run build --filter=./apps/minifront --concurrency=1
+        working-directory: ./web
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096 # Increase Node.js heap size
+      # ===============================================
+
+      # Replace below with your hosting provider of choice!
+
+      # ========== Vercel example ==========
+      # Create a new project in your Vercel console (choose this forked repo as the connected repo)
+      #
+      # Needed env variables:
+      # VERCEL_ORG_ID: Get from https://vercel.com/<TEAM NAME>/~/settings#team-id
+      # VERCEL_PROJECT_ID: Get from https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings
+      # VERCEL_TOKEN: Create one here https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings/environment-variables
+      #
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web/apps/minifront/dist/
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web/apps/minifront/dist/
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web/apps/minifront/dist/
