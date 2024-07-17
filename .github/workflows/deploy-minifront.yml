@@ -13,7 +13,7 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      # ========== Needed to build minifront ==========
+#   🛠️ ========== Needed to build minifront ========== 🛠️
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -55,32 +55,46 @@ jobs:
         working-directory: ./web
         env:
           NODE_OPTIONS: --max-old-space-size=4096 # Increase Node.js heap size
-      # ===============================================
+#   🛠️ =========================================================== 🛠️
+#       Replace below with your hosting provider of choice!
 
-      # Replace below with your hosting provider of choice!
+#      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
+#      ·                 Vercel example                  ·
+#      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+#       Create a new project in your Vercel console (choose this forked repo as the connected repo)
+#
+#       Needed env variables:
+#       VERCEL_ORG_ID: Get from https://vercel.com/<TEAM NAME>/~/settings#team-id
+#       VERCEL_PROJECT_ID: Get from https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings
+#       VERCEL_TOKEN: Create one here https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings/environment-variables
+#
+#      - name: Install Vercel CLI
+#        run: pnpm add --global vercel@latest
+#
+#      - name: Pull Vercel Environment Information
+#        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+#        working-directory: ./web/apps/minifront/dist/
+#        env:
+#          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+#          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+#
+#      - name: Build Project Artifacts
+#        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+#        working-directory: ./web/apps/minifront/dist/
+#
+#      - name: Deploy Project Artifacts to Vercel
+#        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+#        working-directory: ./web/apps/minifront/dist/
 
-      # ========== Vercel example ==========
-      # Create a new project in your Vercel console (choose this forked repo as the connected repo)
-      #
-      # Needed env variables:
-      # VERCEL_ORG_ID: Get from https://vercel.com/<TEAM NAME>/~/settings#team-id
-      # VERCEL_PROJECT_ID: Get from https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings
-      # VERCEL_TOKEN: Create one here https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings/environment-variables
-      #
-      - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./web/apps/minifront/dist/
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./web/apps/minifront/dist/
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./web/apps/minifront/dist/
+#      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
+#      ·                 Netlify example                 ·
+#      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+#      - name: Install Netlify CLI
+#        run: npm install netlify-cli -g
+#
+#      - name: Deploy to Netlify
+#        env:
+#          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+#          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+#        run: |
+#          netlify deploy --dir=./web/apps/minifront/dist --prod
