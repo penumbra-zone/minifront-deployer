@@ -110,6 +110,7 @@ jobs:
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.CLOUDFLARE_PROJECT_NAME != '' }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -121,9 +122,11 @@ jobs:
       #      ·                 Surge.sh example        ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
       - name: Install Surge
+        if: ${{ env.SURGE_LOGIN != '' && env.SURGE_TOKEN != '' }}
         run: npm install -g surge
 
       - name: Deploy to Surge
+        if: ${{ env.SURGE_LOGIN != '' && env.SURGE_TOKEN != '' }}
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
