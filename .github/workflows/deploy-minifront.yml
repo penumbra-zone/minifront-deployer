@@ -104,3 +104,15 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
           netlify deploy --dir=./web/apps/minifront/dist --prod
+
+      #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
+      #      ·                 Couldflare pages example        ·
+      #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      - name: Publish
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+          directory: dist # e.g. 'dist'
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
