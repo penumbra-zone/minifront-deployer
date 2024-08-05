@@ -108,11 +108,11 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Couldflare pages example        ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
-      - name: Publish
+      - name: Cloudflare
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
-          directory: dist # e.g. 'dist'
+          directory: ./web/apps/minifront/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
