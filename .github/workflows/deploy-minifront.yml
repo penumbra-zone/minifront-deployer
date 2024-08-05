@@ -108,7 +108,7 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Couldflare pages example        ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
-      - name: Cloudflare
+      - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -116,3 +116,15 @@ jobs:
           projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
           directory: ./web/apps/minifront/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
+      #      ·                 Surge.sh example        ·
+      #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Deploy to Surge
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: surge ./web/apps/minifront/dist
