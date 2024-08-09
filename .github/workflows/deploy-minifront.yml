@@ -150,3 +150,8 @@ jobs:
         if: ${{ env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != '' }}
         run: |
           firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_TOKEN }} --public ./web/apps/minifront/dist
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./web/apps/minifront/dist
