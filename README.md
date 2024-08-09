@@ -7,7 +7,7 @@ This GitHub Action automates the build and deployment process for [Minifront](ht
 1. **Fork this repository** to your own GitHub account.
 
 2. **Customize the Action**. Modify the `.github/workflows/deploy-minifront.yml` file:
-     - Adjust your specific hosting provider
+     - Fill in environment variables for your desired hosting providers. You can use as many as you like, they will all be deployed sequentially.
      - Update the secrets in your GitHub repository accordingly
      - Change cron frequency as desired (given github free tier, you can deploy at most every 4 hours)
 
