@@ -68,7 +68,10 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=4096 # Increase Node.js heap size
       #   🛠️ =========================================================== 🛠️
-      #       Replace below with your hosting provider of choice!
+      #       Pick your hosting providers below.
+      #       Enable a provider by getting the required secrets and putting them into
+      #       your repository secrets under the corresponding names.
+      #       You can enable as many providers as you like - they will all be deployed sequentially
 
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Vercel example                  ·
@@ -102,6 +105,12 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Netlify example                 ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      #       Create a new site in your Netlify dashboard
+      #
+      #       Needed env variables:
+      #       NETLIFY_AUTH_TOKEN: https://docs.netlify.com/cli/get-started/#obtain-a-token-in-the-netlify-ui
+      #       NETLIFY_SITE_ID: In your site -> Site configuration -> Site ID
+      #
       - name: Install Netlify CLI
         if: ${{ env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
         run: npm install netlify-cli -g
@@ -114,6 +123,14 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Couldflare pages example        ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      #       Create a new site in your Netlify dashboard
+      #
+      #       Needed env variables:
+      #       CLOUDFLARE_API_TOKEN: https://dash.cloudflare.com/profile/api-tokens
+      #       CLOUDFLARE_PROJECT_NAME: Name of your site
+      #       CLOUDFLARE_ACCOUNT_ID: Select a site and copy Account ID from the right sidebar
+      #       GITHUB_TOKEN is filled in automatically
+      #
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.CLOUDFLARE_PROJECT_NAME != '' }}
@@ -127,6 +144,10 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Surge.sh example                ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      #       Needed env variables:
+      #       SURGE_LOGIN: your surge email address
+      #       SURGE_TOKEN: run `surge token` in your terminal
+      #
       - name: Install Surge
         if: ${{ env.SURGE_LOGIN != '' && env.SURGE_TOKEN != '' }}
         run: npm install -g surge
@@ -142,6 +163,12 @@ jobs:
       #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
       #      ·                 Firebase hosting example        ·
       #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      #       Create a new project in your Firebase Console
+      #
+      #       Needed env variables:
+      #       FIREBASE_PROJECT_ID: can be seen in your projects overview, usually a dash-separated version of your project name
+      #       FIREBASE_TOKEN: npm i -g firebase-tools && firebase login:ci
+      #
       - name: Setup Firebase CLI
         if: ${{ env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_ID != '' }}
         run: npm install -g firebase-tools
@@ -151,7 +178,13 @@ jobs:
         run: |
           firebase deploy --only hosting --project ${{ secrets.FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_TOKEN }} --public ./web/apps/minifront/dist
 
-      - name: Deploy 🚀
+      #      ┌· · · · · · · · · · · · · · · · · · · · · · · · ·┐
+      #      ·                 Github Pages example            .
+      #      └· · · · · · · · · · · · · · · · · · · · · · · · ·┘
+      #      This step will copy the minifront build to a gh-pages branch.
+      #      To deploy, enable Github Pages in your repository settings,
+      #      and follow the deployments link on your repository page.
+      - name: Deploy to GitHub Actions
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./web/apps/minifront/dist
