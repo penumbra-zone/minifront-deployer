@@ -12,7 +12,7 @@ on:
 jobs:
   build_and_deploy:
     env:
-      VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -80,26 +80,26 @@ jobs:
       #       Create a new project in your Vercel console (choose this forked repo as the connected repo)
       #
       #       Needed env variables:
-      #       VERCEL_TEAM_ID: Get from https://vercel.com/<TEAM NAME>/~/settings#team-id
+      #       VERCEL_ORG_ID: Get from https://vercel.com/<TEAM NAME>/~/settings#team-id (it's called team id in the UI)
       #       VERCEL_PROJECT_ID: Get from https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings
-      #       VERCEL_TOKEN: Create one here https://vercel.com/<TEAM NAME>/<PROJECT NAME>/settings/environment-variables
+      #       VERCEL_TOKEN: Create one here https://vercel.com/account/tokens
       #
       - name: Install Vercel CLI
-        if: ${{ env.VERCEL_TEAM_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
+        if: ${{ env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
         run: pnpm add --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        if: ${{ env.VERCEL_TEAM_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
+        if: ${{ env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web/apps/minifront/dist/
 
       - name: Build Project Artifacts
-        if: ${{ env.VERCEL_TEAM_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
+        if: ${{ env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web/apps/minifront/dist/
 
       - name: Deploy Project Artifacts to Vercel
-        if: ${{ env.VERCEL_TEAM_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
+        if: ${{ env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != '' && env.VERCEL_TOKEN != '' }}
         run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: ./web/apps/minifront/dist/
 
